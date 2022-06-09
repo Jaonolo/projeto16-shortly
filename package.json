@@ -11,8 +11,11 @@
   "author": "João Vitor Cezario Sanches",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
-    "express": "^4.18.1"
+    "express": "^4.18.1",
+    "pg": "^8.7.3",
+    "uuid": "^8.3.2"
   }
 }
