@@ -8,10 +8,12 @@ import { fileURLToPath } from "url";
 
 //import xRouter from './routers/x.js'
 import authRouter from './routers/auth.js'
+import urlsRouter from "./routers/urls.js";
 
 const routers = [
     //xRouter,
-    authRouter
+    authRouter,
+    urlsRouter
 ]
 
 /* ==    -     == */
