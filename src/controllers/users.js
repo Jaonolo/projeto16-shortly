@@ -5,19 +5,22 @@ export const getUserController = async (req, res) => {
         const {id} = req.params
 
         const query = (await client.query(`
-            select u.*, urls.* from users u 
-            join urls on urls."userId"=u.id
+            select
+                u.*,
+                urls.*
+            from users u 
+            left join urls on urls."userId"=u.id
             where u.id=$1
         `, [id])).rows;
         if (query.length === 0) return res.sendStatus(404)
 
-        const {userId, name} = query[0]
+        const {id: urlId, name} = query[0]
 
         const formattedResponse = {
-            id: userId,
+            id: id,
             name,
             visitCount: query.reduce((acc, elem) => acc + 1*elem.viewCount, 0),
-            shortenedUrls: query.map(
+            shortenedUrls: urlId === null ? [] : query.map(
                 ({id, shortUrl, url, viewCount}) => {return {id, shortUrl, url, visitCount: 1*viewCount}}
             )
         }
@@ -38,9 +41,10 @@ export const getRankingController = async (req, res) => {
     try {
         const query = (await client.query(`
             select u.*, count(urls), sum(urls."viewCount") from users u 
-            join urls on urls."userId"=u.id
+            left join urls on urls."userId"=u.id
             group by u.id
-            order by sum(urls."viewCount") desc
+            order by sum(urls."viewCount") desc nulls last
+            limit 10
         `)).rows;
         if (query.length === 0) return res.sendStatus(404)
 
