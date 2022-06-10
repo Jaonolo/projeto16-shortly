@@ -8,7 +8,7 @@ export default schemaName => ((req, res, next) => {
     const schema = chooseSchema[schemaName]
 
     const errors = schema.validate(req.body).error
-    if(errors) return res.status(402).send(errors)
+    if(errors) return res.status(422).send(errors)
 
     next()
 })
