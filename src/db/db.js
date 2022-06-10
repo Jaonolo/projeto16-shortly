@@ -8,9 +8,9 @@ const { Pool } = pg;
 
 const connectionInfo = {
     connectionString: DATABASE_URL,
-    //ssl: {
-    //    rejectUnauthorized: false
-    //}
+    ssl: {
+        rejectUnauthorized: false
+    }
 };
 
 export default new Pool(connectionInfo);
