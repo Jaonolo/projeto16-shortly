@@ -5,8 +5,7 @@ export const postUrlController = async (req, res) => {
     try {
         const {url} = req.body
 
-        //const {userId} = res.locals
-        const userId = 2
+        const {currentUser: userId} = res.locals
 
         const shortUrl = nanoid()
 
@@ -75,8 +74,7 @@ export const deleteUrlController = async (req, res) => {
     try {
         const {id} = req.params
 
-        //const {currentUserId} = res.locals
-        const currentUserId = 2
+        const {currentUser: currentUserId} = res.locals
 
         const checkQuery = (await client.query('select * from urls u where u.id=$1', [id])).rows;
         if (checkQuery.length === 0) return res.sendStatus(404)
@@ -96,24 +94,4 @@ export const deleteUrlController = async (req, res) => {
         console.error(error)
         return res.status(convertion[error.code] || 500).send(error)
     }
-}
-
-export const signinController = async (req, res) => {
-    try {
-        const {email, password} = req.body
-
-        const checkQuery = (await client.query('select * from users u where u.email=$1', [email])).rows
-        const user = checkQuery[0]
-
-        if(checkQuery.length === 0 || !(bcrypt.compareSync(password, user.password))) return res.sendStatus(401)
-
-        const token = uuid()
-
-        const addQuery =  await client.query('insert into sessions ("authToken", "userId") values ($1, $2)', [
-            token,
-            user.id
-        ]);
-        return res.status(200).send(token)
-
-    } catch (error) { return res.status(500).send(error) }
 }
